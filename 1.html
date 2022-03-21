@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX-1</title>
+</head>
+
+<body>
+    <style>
+        body {
+            background-color: #67A4F4;
+        }
+
+        .wrapper {
+            display: flex;
+            justify-content: center;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        li {
+            min-width: 400px;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 1px 10px 0 rgba(0, 0, 0, .5);
+        }
+        .user__img{
+            flex-basis: 20%;
+        }
+        .user__text {
+            flex-basis: 80%;
+            text-align: center;
+        }
+
+        .user__title {
+            font-weight: 900;
+            font-size: 20px;
+            padding-bottom: 10px;
+        }
+    </style>
+
+    <div class="wrapper">
+        <main>
+            <ul></ul>
+        </main>
+    </div>
+
+
+    <script>
+        let URLMAIN = 'https://randomuser.me/api/?results=7';
+        let URLSCROLL = 'https://randomuser.me/api/?results=1';
+
+        function fetchAPI(url) {
+            fetch(url)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    data.results.forEach(element => {
+                        createElement(element);
+                    });
+                })
+                .catch((e) => {
+                    console.log(e)
+                })
+        }
+
+        function createElement(data) {
+            const LI = document.createElement('LI');
+
+            const DIVIMG = document.createElement('DIV');
+            DIVIMG.classList = 'user__img';
+            const IMG = document.createElement('IMG');
+            IMG.setAttribute('src', `${data.picture.medium}`);
+            DIVIMG.appendChild(IMG);
+
+            const DIVTEXT = document.createElement('DIV');
+            DIVTEXT.classList = 'user__text';
+
+            const DIVTITLE = document.createElement('DIV');
+            DIVTITLE.classList = 'user__title';
+            DIVTITLE.innerHTML = data.name.first;
+            DIVTEXT.appendChild(DIVTITLE);
+
+            const DIVEMAIL = document.createElement('DIV');
+            DIVEMAIL.classList = 'user__email';
+            DIVEMAIL.innerHTML = data.email;
+            DIVTEXT.appendChild(DIVEMAIL);
+
+            LI.appendChild(IMG);
+            LI.appendChild(DIVTEXT);
+
+            document.querySelector('ul').appendChild(LI);
+        }
+        window.addEventListener('load', function () {
+            fetchAPI(URLMAIN);
+        })
+
+        window.addEventListener('scroll', () => {
+            const {
+                scrollTop,
+                scrollHeight,
+                clientHeight
+            } = document.documentElement;
+
+            if (scrollTop + clientHeight >= scrollHeight - 10) {
+                fetchAPI(URLSCROLL);                
+            }
+        });
+
+    </script>
+</body>
+
+</html>
